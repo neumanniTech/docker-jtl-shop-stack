@@ -1,0 +1,38 @@
+version: "3.8"
+
+services: 
+    jtl-shop:
+        image: jtl-5-0-1
+        build: ./docker/web
+        ports: 
+            - "80:80"
+        volumes: 
+            - ./shop:/var/www/html
+        depends_on: 
+            - "jtl-db"
+    
+    jtl-db:
+        image: mariadb:10.6.0
+        ports: 
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+            MYSQL_USER: "${MYSQL_USER}"
+            MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+        volumes: 
+            - jtl_db_5_0_1:/var/lib/mysql
+
+    phpmyadmin:
+        image: phpmyadmin:5.1.0-apache
+        ports: 
+            - "8080:80"
+        environment: 
+            PMA_HOST: jtl-db
+        depends_on: 
+            - "jtl-db"
+
+volumes: 
+    jtl_db_5_0_1:
+
+
+
