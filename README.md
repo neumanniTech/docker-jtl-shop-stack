@@ -1,5 +1,5 @@
 # docker-jtl-shop-stack
-Complete local development stack for JTL Shop, PHP7.4 (Xdebug) - Apache, MariaDB(10.6.0), PhpMyAdmin using docker-compose.
+Complete local development stack for JTL Shop 5.0.1, PHP7.4 (Xdebug) - Apache, MariaDB(10.6.0), PhpMyAdmin using docker-compose.
 
 Tested JTL Shop Version:
 - 5.0.1
