@@ -7,6 +7,7 @@ Tested JTL Shop Version:
 Original Repo here: https://github.com/neumanniTech/docker-jtl-shop-stack
 
 # Installation
+## Clone the Repo
 First, clone this repository:
 
 `git clone git@github.com:hreinberger/jtl-docker.git`
@@ -21,10 +22,19 @@ Then, run:
 
 `docker-compose up -d`
 
-You are done, you can visit and configure your JTL Shop on the following URL: `http://localhost` . 
+## DB Setup
+The shop wants an existing DB, so you'll have to create one in PHPMyAdmin: `http://localhost:8080`
+
+## Shop Installation
+
+You can now visit and configure your JTL Shop on the following URL: `http://localhost`.
 
 **Info:** The DB Host must be `jtl-db`
 
+## Mailhog configuration
+In JTLs Mail settings, set the mail method to SMTP and SMTP hostname to `mailhog` on Port 1025 with no auth
+
+## Links
 PhpMyAdmin: `http://localhost:8080`
 Mailhog: `http://localhost:8888`
 
@@ -40,3 +50,11 @@ Logs can be shown using
 ```bash
 docker compose logs jtl-shop bash
 ```
+
+## htaccess issues
+If you're having trouble with access to the PDPs, copy the `.htaccess` file from the `docker/web` directory to the shop directory.
+
+# To Do
+[ ] automate .htaccess setup
+[ ] download and unzip shop build automatically
+[ ] docker image
