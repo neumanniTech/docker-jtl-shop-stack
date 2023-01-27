@@ -11,7 +11,7 @@ First, clone this repository:
 
 `git clone git@github.com:hreinberger/jtl-docker.git`
 
-Next, put your JTL Shop into `shop`.
+Next, put your JTL Shop into `shop`. You can obtain a recent shop build from here: https://build.jtl-shop.de/ 
 
 Rename `.env.dist` to `.env`. 
 
