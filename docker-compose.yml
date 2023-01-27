@@ -10,6 +10,8 @@ services:
             - ./shop:/var/www/html
         depends_on: 
             - "jtl-db"
+        environment:
+            - "TZ=Europe/Berlin"
     
     jtl-db:
         image: mariadb:10.6.0
@@ -19,17 +21,24 @@ services:
             MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
             MYSQL_USER: "${MYSQL_USER}"
             MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+            TZ: "Europe/Berlin"
         volumes: 
             - jtl_db_5_0_1:/var/lib/mysql
 
     phpmyadmin:
-        image: phpmyadmin:5.1.0-apache
+        image: phpmyadmin:apache
         ports: 
             - "8080:80"
         environment: 
             PMA_HOST: jtl-db
+            TZ: "Europe/Berlin"
         depends_on: 
             - "jtl-db"
+    mailhog:
+        image: mailhog/mailhog
+        ports:
+            - "8888:8025"
+            - "1025:1025"
 
 volumes: 
     jtl_db_5_0_1:

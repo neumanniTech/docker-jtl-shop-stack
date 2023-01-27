@@ -1,0 +1,132 @@
+<IfModule mod_setenvif.c>
+  <IfModule mod_headers.c>
+    <FilesMatch "\.(bmp|cur|gif|ico|jpe?g|png|svgz?|webp)$">
+      SetEnvIf Origin ":" IS_CORS
+      Header set Access-Control-Allow-Origin "*" env=IS_CORS
+    </FilesMatch>
+
+    SetEnvIfNoCase ^(Accept-EncodXng|X-cept-Encoding|X{15}|~{15}|-{15})$ ^((gzip|deflate)\s*,?\s*)+|[X~-]{4,13}$ HAVE_Accept-Encoding
+    RequestHeader append Accept-Encoding "gzip,deflate" env=HAVE_Accept-Encoding
+  </IfModule>
+</IfModule>
+
+<IfModule mod_filter.c>
+  <IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE \
+      "application/atom+xml" \
+      "application/javascript" \
+      "application/json" \
+      "application/ld+json" \
+      "application/manifest+json" \
+      "application/rdf+xml" \
+      "application/rss+xml" \
+      "application/schema+json" \
+      "application/vnd.geo+json" \
+      "application/vnd.ms-fontobject" \
+      "application/x-font-ttf" \
+      "application/x-javascript" \
+      "application/x-web-app-manifest+json" \
+      "application/xhtml+xml" \
+      "application/xml" \
+      "font/eot" \
+      "font/opentype" \
+      "image/bmp" \
+      "image/svg+xml" \
+      "image/vnd.microsoft.icon" \
+      "image/x-icon" \
+      "text/cache-manifest" \
+      "text/css" \
+      "text/html" \
+      "text/javascript" \
+      "text/plain" \
+      "text/vcard" \
+      "text/vnd.rim.location.xloc" \
+      "text/vtt" \
+      "text/x-component" \
+      "text/x-cross-domain-policy" \
+      "text/xml"
+  </IfModule>
+  <IfModule mod_mime.c>
+    AddEncoding gzip svgz
+  </IfModule>
+</IfModule>
+
+<IfModule !mod_filter.c>
+  <IfModule mod_deflate.c>
+    <FilesMatch "\\.(js|css|html|htm|xml)$">
+      SetOutputFilter DEFLATE
+    </FilesMatch>
+  </IfModule>
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive on
+  ExpiresDefault "access plus 1 months"
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header unset ETag
+
+  Header set X-UA-Compatible "IE=edge"
+  Header set X-Content-Type-Options "nosniff"
+  Header unset X-Powered-By
+  Header set X-Frame-Options "SAMEORIGIN"
+
+  <FilesMatch "\.(eot|otf|tt[cf]|woff2?)$">
+    Header set Access-Control-Allow-Origin "*"
+  </FilesMatch>
+
+  <FilesMatch "\.(appcache|atom|bbaw|bmp|crx|css|cur|eot|f4[abpv]|flv|geojson|gif|htc|ico|jpe?g|js|json(ld)?|m4[av]|manifest|map|mp4|oex|og[agv]|opus|otf|pdf|png|rdf|rss|safariextz|svgz?|swf|topojson|tt[cf]|txt|vcard|vcf|vtt|webapp|web[mp]|webmanifest|woff2?|xloc|xml|xpi)$">
+    Header unset X-UA-Compatible
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  RewriteEngine on
+
+  #REWRITE ANPASSUNG 1 (REWRITEBASE)
+  #Wenn Ihr Shop in einem Unterverzeichnis (also z.B. meinedomain.de/meinverzeichnis) installiert ist, so kommentieren Sie die kommende Zeile aus und passen Sie den Verzeichnisnamen an
+  #RewriteBase /
+
+  #REWRITE ANPASSUNG 2 (auf www.meinedomain.de umleiten)
+  #Ihr Shop sollte nicht unter www.meinedomain.de und nur meinedomain.de erreichbar sein, siehe: https://guide.jtl-software.de/index.php?title=JTL-Shop3-Neuinstallation#4._Einrichtung_einer_Domainweiterleitung
+  #Achten Sie darauf, daß Sie bei Verwendung der SSL-Verschlüsselung das Weiterleitungsziel unbedingt mit https und nicht nur mit http angeben!
+  #RewriteCond %{HTTP_HOST} !^www\.meinedomain\.de$ [NC]
+  #RewriteRule ^(.*)$ http(s)://www.meinedomain.de/$1 [R=301,L]
+
+  #REWRITE ANPASSUNG 3 (Entfernt abschließenden Slash per 301-Redirect)
+  #RewriteCond %{REQUEST_FILENAME} !-f
+  #RewriteCond %{REQUEST_FILENAME} !-d
+  #RewriteCond %{REQUEST_URI} ^(.*)/$
+  #RewriteRule ^. %1 [R=301,L]
+
+  #REWRITE ANPASSUNG 4 (Weiterleitung auf SSL-Verschlüsselung bei Aufruf über http)
+  #Diese Angabe entlastet die PHP-Engine von Weiterleitungen anhand Einstellung 192 und sorgt zusätzlich dafür, daß auch statische Resourcen über https ausgeliefert werden.
+  #RewriteCond %{HTTPS} !=on
+  #RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+  #Rewrite der JTL-Shop-URLs
+  #Aendern Sie an diesen Zeilen nichts!
+  RewriteRule ^templates_c/filecache/.*$ - [R=403,NC,L]
+  RewriteRule ^((urllist|sitemap_).*\.(xml|txt)(\.gz)?)$ includes/sitemap.php?datei=$1 [L]
+  RewriteRule ^export/((sitemap_).*\.(xml|txt)(\.gz)?)$ $1 [L]
+  RewriteRule ^asset/(.*)$ includes/libs/minify/?g=$1 [QSA,L]
+  RewriteRule ^static/(.*)$ templates_c/min/$1 [QSA,L]
+  RewriteRule ^dbeS/tmp/(.*)$ - [F,L]
+  RewriteRule ^dbeS/(.*)\.php$ dbeS/index.php?id=$1 [QSA,L]
+  RewriteRule ^dbeS/(.*)$ - [F,L]
+  RewriteRule ^robots.txt$ robots.php [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} !^/favicon.ico
+  RewriteRule ^. index.php [L]
+  
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} ^/favicon.ico
+  RewriteRule ^. favicon-default.ico [L]
+</IfModule>
+
+FileETag None
+#Server Signatur deaktivieren
+#ServerSignature Off
