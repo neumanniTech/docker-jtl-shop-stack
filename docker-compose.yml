@@ -2,19 +2,21 @@ version: "3.8"
 
 services: 
     jtl-shop:
-        image: jtl-5-0-1
-        build: ./docker/web
+        image: jtl-shop
+        build: 
+            context: ./docker/web
+            args:
+                PHP_VERSION: "${PHP_VERSION}"
+                JTL_VERSION: "${JTL_VERSION}"
+                TZ: Europe/Berlin
         ports: 
             - "80:80"
-        volumes: 
-            - ./shop:/var/www/html
         depends_on: 
             - "jtl-db"
-        environment:
-            - "TZ=Europe/Berlin"
+
     
     jtl-db:
-        image: mariadb:10.6.0
+        image: mariadb:10
         ports: 
             - "3306:3306"
         environment:
@@ -22,11 +24,12 @@ services:
             MYSQL_USER: "${MYSQL_USER}"
             MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
             TZ: "Europe/Berlin"
+            MYSQL_DATABASE: "${MYSQL_DATABASE}"
         volumes: 
-            - jtl_db_5_0_1:/var/lib/mysql
+            - jtl_db:/var/lib/mysql
 
     phpmyadmin:
-        image: phpmyadmin:apache
+        image: phpmyadmin
         ports: 
             - "8080:80"
         environment: 
@@ -34,14 +37,15 @@ services:
             TZ: "Europe/Berlin"
         depends_on: 
             - "jtl-db"
+
     mailhog:
         image: mailhog/mailhog
         ports:
-            - "8888:8025"
+            - "8081:8025"
             - "1025:1025"
 
 volumes: 
-    jtl_db_5_0_1:
+    jtl_db:
 
 
 

@@ -101,5 +101,3 @@ Temporary Items
 
 # Environment files
 .env
-shop/*
-! shop/.gitkeep
