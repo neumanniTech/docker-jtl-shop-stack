@@ -1,7 +1,7 @@
-FROM php:7.4.16-apache
+FROM php:8.2.14-apache
 
 # INSTALL XDEBUG
-RUN pecl install xdebug-3.0.3 && rm -r /tmp/pear/*
+RUN pecl install xdebug-3.3.1 && rm -r /tmp/pear/*
 
 # PHP EXTENSIONS Imagick, intl, bcmath, soap, opcache, pdo_mysql, xdebug
 RUN apt-get update && apt-get install -y libzip-dev zip libicu-dev libxml2-dev libmagickwand-dev --no-install-recommends && rm -rf /var/lib/apt/lists/*

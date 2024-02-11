@@ -2,7 +2,7 @@ version: "3.8"
 
 services: 
     jtl-shop:
-        image: jtl-5-0-1
+        image: jtl-5-2-4
         build: ./docker/web
         ports: 
             - "80:80"
@@ -20,7 +20,7 @@ services:
             MYSQL_USER: "${MYSQL_USER}"
             MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
         volumes: 
-            - jtl_db_5_0_1:/var/lib/mysql
+            - jtl_db_5_2_4:/var/lib/mysql
 
     phpmyadmin:
         image: phpmyadmin:5.1.0-apache
@@ -32,7 +32,7 @@ services:
             - "jtl-db"
 
 volumes: 
-    jtl_db_5_0_1:
+    jtl_db_5_2_4:
 
 
 
